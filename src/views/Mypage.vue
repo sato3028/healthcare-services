@@ -6,14 +6,14 @@
           <div class="row">
               <div class="card-padding card-shadow ui card eight wide left floated column">
               <div class="content">
-                <h2 class="header">お子さんの状態は</h2>
+                <h2 class="header">{{user.name}}さんの状態は</h2>
                 <div class="meta-padding meta">
                     <h3>
                         現在
-                        <span class="massive-text">ゴックン期</span>
+                        <span class="massive-text">{{_mypage_term}}期</span>
                     </h3>
                 </div>
-                <p>生後5~6か月目であるゴックン期ではペースト状のものが好まれます。</p>
+                <p>生後{{_mypage_months_of_age}}か月目である{{_mypage_term}}期ではペースト状のものが好まれます。</p>
               </div>
             </div>
             
@@ -23,10 +23,10 @@
                 <div class="nutrition-padding meta">
                     <h3>
                         現在
-                        <span class="massive-text">1~2回</span>
+                        <span class="massive-text">{{_mypage_daily_time_of_meals}}</span>
                     </h3>
                 </div>
-                <p>ゴックン期の食事量は1日1回の食事が一般的とされています。ゴックン期の後期からは1日2回の食事も視野に入れましょう。</p>
+                <p>{{_mypage_daily_tips}}</p>
               </div>
             </div>
             
@@ -36,26 +36,26 @@
               <div class="card-padding card-shadow ui card five wide left floated column">
               <div class="content">
                 <h2 class="header">足りていない栄養素は</h2>
-                <div class="nutrition-padding">
-                    <div class="large-text">タンパク質</div>
-                    <div class="large-text">カルシウム</div>
-                </div>
+                  <ul>
+                    <li v-for="(item, index) in lack_nutrients" :key="index">
+                      <div class="large-text">{{item.name}}</div>
+                    </li>
+                  </ul>
                 <p>なんか書く</p>
               </div>
             </div>
             
               <div class="card-padding card-shadow ui card ten wide right floated column">
               <div class="content">
-                <h2 class="header">Tips</h2>
-                <div class="meta-padding meta">
-                    <h3>
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-                        quis nostrud exerci tation ullamcorper suscipit lobortis nisl
-                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
-                    </h3>
+                <h2 class="header">おすすめの食品は</h2>
+                <div class="nutrition-padding">
+                    <ul>
+                      <li v-for="(item, index) in foods" :key="index">
+                        <div class="large-text">{{item.name}}</div>
+                      </li>
+                    </ul>
                 </div>
+                <p>です！</p>
               </div>
             </div>
             
@@ -93,12 +93,73 @@ export default {
         season: "1"
       },
       done_submit: false,
-      foods: []
+      foods:[],
+      lack_nutrients: [], // 不足している栄養素
     };
   },
 
   computed: {
     // 計算した結果を変数として利用したいときはここに記述する
+    
+    // 1日の食事回数
+    _mypage_daily_time_of_meals: function() {
+      if(this.user.season === "1") {
+        return "1~2回"; 
+      } else if(this.user.season === "2") {
+        return "2回";
+      } else if(this.user.season === "3") {
+        return "3回";
+      } else if(this.user.season === "4") {
+        return "3回+間食";
+      } else {
+        return "";
+      }
+    },
+    
+    // ○○期
+    _mypage_term: function() {
+      if(this.user.season === "1") {
+        return "ゴックン"; 
+      } else if(this.user.season === "2") {
+        return "モグモグ";
+      } else if(this.user.season === "3") {
+        return "カミカミ";
+      } else if(this.user.season === "4") {
+        return "パクパク";
+      } else {
+        return "";
+      }
+    },
+    
+    // 生後〇～〇か月
+    _mypage_months_of_age: function() {
+      if(this.user.season === "1") {
+        return "5~6"; 
+      } else if(this.user.season === "2") {
+        return "7~8";
+      } else if(this.user.season === "3") {
+        return "9~11";
+      } else if(this.user.season === "4") {
+        return "12~18";
+      } else {
+        return "";
+      }
+    },
+    
+    // Tips的な文章(一日の食事量の下。)
+    _mypage_daily_tips: function() {
+      if(this.user.season === "1") {
+        return "ゴックン期の食事量は1日1回が一般的とされています。ゴックン期の後期からは1日2回の食事も視野に入れましょう。"; 
+      } else if(this.user.season === "2") {
+        return "モグモグ期の食事量は1日2回が一般的とされています。食材は前半は豆腐程度の硬さにつぶし、後半はつぶさず2~4mm程度を意識しましょう。";
+      } else if(this.user.season === "3") {
+        return "カミカミ期の食事量は1日3回が一般的とされています。前半は歯茎でつぶせる程度の硬さで5mm程度に、後半は少しずつサイズを大きくしましょう。";
+      } else if(this.user.season === "4") {
+        return "パクパク期では、1日3回の食事と、赤ちゃんの様子次第で間食を加えてみましょう。後半は自分の手で持って食べさせてみましょう。";
+      } else {
+        return "";
+      }
+    }
   },
 
   methods: {
