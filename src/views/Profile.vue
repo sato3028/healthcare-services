@@ -15,30 +15,35 @@
           <div class="two fields">
             <div class="field">
               <label>赤ちゃんの名前</label>
-              <input v-model="user.userId" type="text" name="shipping[address]" placeholder="お子さんの名前を入力してください">
+              <input v-model="user.name" type="text" name="shipping[address]" placeholder="お子さんの名前を入力してください">
             </div>
             <div class="field">
               <label>お子さんが生まれてから</label>
               <select class="ui fluid dropdown">
                 <option value="">選んでください</option>
-                <option value="">5~6カ月(離乳食初期)</option>
-                <option value="">7~8カ月(離乳食中期)</option>
-                <option value="">9~11カ月(離乳食後期)</option>
-                <option value="">12~18カ月(離乳食完了期)</option>
+                <option value="1">5~6カ月(離乳食初期)</option>
+                <option value="2">7~8カ月(離乳食中期)</option>
+                <option value="3">9~11カ月(離乳食後期)</option>
+                <option value="4">12~18カ月(離乳食完了期)</option>
               </select>
             </div>
           </div>
           
           <h4 class="ui dividing header">お子さんの苦手な食品/食べられない食品を選んでください</h4>
-          <div class="ui four column grid">
-            
-              <div class="column">
+          
+          <ul class="ui four column grid">
+            <template v-for="(food, index) in foods" :key="index">
+              <li class="column">
                 <div class="check-center ui toggle checkbox">
-                  <input  type="checkbox" name="public">
-                  <label>さけ</label>
+                  <div class="content">
+                    <input  type="checkbox" name="public">
+                    <label>{{food.name}}</label>
+                  </div>
                 </div>
-              </div>
-              
+              </li>
+            </template>
+          </ul>
+            <!--  
               <div class="column">
                 <div class="check-center ui toggle checkbox">
                   <input type="checkbox" name="public">
@@ -66,8 +71,9 @@
                   <label>ほうれんそう</label>
                 </div>
               </div>
+            -->
               
-          </div>
+          
           
           <div class="submit-box ui grid">
             <div class="row">
