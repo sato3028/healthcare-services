@@ -6,7 +6,7 @@
        <h2 class="text-center">食べた食材</h2>
         <div class="submit-box ui grid">
           <div class="row">
-         
+            <!--
             <div class="ui fluid multiple search selection dropdown eight wide left floated column">
               <input type="hidden" name="country">
               <i class="dropdown icon"></i>
@@ -17,46 +17,48 @@
               <div class="item" data-value="al"><i class="al flag"></i>Albania</div>
             </div>
             </div>
+            -->
             
-            <!--<div class="ui fluid multiple search selection dropdown eight wide left floated column">-->
-            <!--  <input type="hidden" name="country">-->
-            <!--  <i class="dropdown icon"></i>-->
-            <!--  <div class="default text">食材を選んでください</div>-->
-            <!--  <div class="menu">-->
-            <!--<template v-for="(food, index) in foods" :key="index">-->
-            <!--  <div class="item" data-value="">{{ food. }}</div>-->
-            <!--</template>-->
-            <!--  </div>-->
-            <!--</div>-->
+            <div class="ui fluid search selection dropdown eight wide left floated column">
+              <input type="hidden" name="foodselection">
+              <i class="dropdown icon"></i>
+              <div class="default text">食材を選んでください</div>
+              <div class="menu">
+              <template v-for="(food, index) in foods" :key="index">
+                <div class="item" :data-value="food.foodId" >{{ food.name }}</div>
+              </template>
+              </div>
+            </div>
             
             <div class="ui labeled input four wide right floated column">
-              <input type="text" placeholder="Enter weight..">
+              <input type="text" v-model="weight" placeholder="食べた量を入力">
               <div class="ui basic label">
                 g
               </div>
             </div>
             
-            <button type="submit" class="add-button two wide right floated column">
+            <button type="add" v-on:click="addFoodToHistories()" class="add-button two wide right floated column">
               追加
             </button>
          
           </div>
         </div>
         
-      <!--  <ul class="ui three column grid">-->
-      <!--  <template v-for="(history, index) in histories" :key="index">-->
-      <!--    <li class="column">-->
-      <!--      <div class="ui card fluid">-->
-      <!--        <div class="content">-->
-      <!--          <h2 class="header">-->
-      <!--            {{ history. }}-->
-      <!--          </h2>-->
-      <!--          <span class="meta">history. </span>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--    </li>-->
-      <!--  </template>-->
-      <!--</ul>-->
+        <ul class="ui three column grid">
+        <template v-for="(history, index) in histories" :key="index">
+          <li class="column">
+            <div class="ui card fluid">
+              <div class="content">
+                <h2 class="header">
+                  {{ filteredFoods(history.foodId) }}
+                </h2>
+                <span class="meta">{{history.weight}} </span>
+              </div>
+            </div>
+          </li>
+        </template>
+      </ul>
+      <!--
       <ul class="ui three column grid">
           <li class="column">
             <div class="ui card fluid">
@@ -102,10 +104,11 @@
             </div>
           </li>
       </ul>
+      -->
       
       <div class="submit-box ui grid">
         <div class="row">
-          <button type="submit" class="submit-button two wide right floated column">
+          <button v-on:click="submit()" type="submit" class="submit-button two wide right floated column">
               送信
           </button>
         </div>
@@ -125,8 +128,9 @@ export default {
   data() {
     return {
       userId: window.localStorage.getItem('userId'),
+      weight:0,
       foods:[],
-      history:[],
+      histories:[],
     };
   },
 
@@ -135,6 +139,25 @@ export default {
   },
 
   methods: {
+    addFoodToHistories(){
+      var selectedValue = document.querySelector('.ui.fluid.search.selection.dropdown input[name="foodselection"]').value;
+      const unit = {"foodId": selectedValue, "weight": this.weight}
+      //console.log(unit)
+      
+      this.histories.push(unit)
+      //console.log(this.histories)
+      
+      var dropdownElement = document.querySelector('.ui.fluid.search.selection.dropdown');
+      $(dropdownElement).dropdown('clear');
+      this.weight = 0
+    },
+    
+    filteredFoods(key) {
+      const target = this.foods.filter(food => food.foodId === key);
+      console.log(target[0])
+      return target[0].name
+    },
+    
     async createFoods(){
       const headers = { Authorization: "mtiToken" };
       try {
@@ -160,11 +183,11 @@ export default {
     async submit() {
       const headers = {'Authorization': 'mtiToken'};
       const userId = this.userId;
-      const history = this.history;
+      const histories = this.histories;
 
       const reqBody = {
         userId,
-        history,
+        histories,
       };
 
       try {
@@ -186,6 +209,9 @@ export default {
           this.done_submit = true;
         }
         console.log(jsonData);
+        
+        this.histories = [];
+        this.$router.push({ name: 'Mypage'});
 
       } catch (e) {
         console.log(e)
@@ -193,8 +219,8 @@ export default {
     }
   },
   mounted: function() {
-      $('.ui.dropdown')
-        .dropdown();
+     $('.ui.dropdown')
+      .dropdown();
   },
   created: async function() {
     this.createFoods();
