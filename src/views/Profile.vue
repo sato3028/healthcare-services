@@ -64,10 +64,13 @@ export default {
       user: {
         userId: window.localStorage.getItem('userId'),
         password: null,
-        nickname: null,
-        age: null,
+        name: null,
+        dislike: [],
+        season: "1"
       },
       done_submit: false,
+      foods:[],
+      lack_nutrients: [], // 不足している栄養素
     };
   },
 
@@ -80,6 +83,54 @@ export default {
 
   methods: {
     // Vue.jsで使う関数はここで記述する
+    async createFoods(){
+      const headers = { Authorization: "mtiToken" };
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + `/foods`, {
+          method: "GET",
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok){
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        this.foods = jsonData.foods
+      }catch (e) {
+        console.log(e)
+      }
+    },
+    
+    async createUser(){
+      const headers = { Authorization: "mtiToken" };
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + `/user?userId=${this.user.userId}`, {
+          method: "GET",
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok){
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        
+        this.user.name = jsonData.user.name;
+        this.user.password = jsonData.user.password;
+        this.user.dislike = jsonData.user.dislike;
+        this.user.season = jsonData.user.season;
+      }catch (e) {
+        console.log(e)
+      }
+    },
+    
     async deleteUser() {
       const headers = {'Authorization': 'mtiToken'};
       
@@ -142,27 +193,8 @@ export default {
   },
   
   created: async function() {
-    const headers = { Authorization: "mtiToken" };
-    try {
-      /* global fetch */
-      const res = await fetch(baseUrl + `/user?userId=${this.user.userId}`, {
-        method: "GET",
-        headers,
-      });
-      
-      const text = await res.text();
-      const jsonData = text ? JSON.parse(text) : {}
-      
-      if (!res.ok){
-        const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
-        throw new Error(errorMessage);
-      }
-      
-      this.user.nickname = jsonData.nickname;
-      this.user.age = jsonData.age;
-    }catch (e) {
-      console.log(e)
-    }
+    this.createFoods();
+    this.createUser();
   },
 };
 </script>
