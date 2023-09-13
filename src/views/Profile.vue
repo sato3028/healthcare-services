@@ -2,45 +2,85 @@
   <div>
     <div class="ui main container">
       <div class="ui segment">
-        <!-- 基本的なコンテンツはここに記載する -->
-        <div class="submitted" v-if="done_submit">
-          <h2>プロフィール情報を更新しました</h2>
-        </div>
-        <form class="ui large form" @submit.prevent="submit">
+        
+        
+        <form class="ui form" @submit.prevent="submit">
+          <h4 class="ui dividing header">プロフィール編集</h4>
           <div class="field">
-            <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input v-model="user.userId" type="text" placeholder="ログインID" required disabled>
+            <label>ユーザー名</label>
+              <div class="field">
+                <input v-model="user.userId" type="text" name="shipping[first-name]" placeholder="利用する方の名前を入力してください" required disabled>
             </div>
           </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="lock icon"></i>
-              <input v-model="user.password" type="password" placeholder="パスワード">
+          <div class="two fields">
+            <div class="field">
+              <label>赤ちゃんの名前</label>
+              <input v-model="user.userId" type="text" name="shipping[address]" placeholder="お子さんの名前を入力してください">
+            </div>
+            <div class="field">
+              <label>お子さんが生まれてから</label>
+              <select class="ui fluid dropdown">
+                <option value="">選んでください</option>
+                <option value="">5~6カ月(離乳食初期)</option>
+                <option value="">7~8カ月(離乳食中期)</option>
+                <option value="">9~11カ月(離乳食後期)</option>
+                <option value="">12~18カ月(離乳食完了期)</option>
+              </select>
             </div>
           </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="tag icon"></i>
-              <input v-model="user.name" type="name" placeholder="赤ちゃんの名前">
+          
+          <h4 class="ui dividing header">お子さんの苦手な食品/食べられない食品を選んでください</h4>
+          <div class="ui four column grid">
+            
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input  type="checkbox" name="public">
+                  <label>さけ</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>鶏肉</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>しらす</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>卵黄</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>ほうれんそう</label>
+                </div>
+              </div>
+              
+          </div>
+          
+          <div class="submit-box ui grid">
+            <div class="row">
+              <button type="submit" @click="submit()" class="submit-button two wide right floated column">
+                  更新する
+              </button>
             </div>
           </div>
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="calendar icon"></i>
-              <input v-model.number="user.age" type="text" placeholder="age">
-            </div>
-          </div>
-          <button :disabled="isButtonDisabled" @click="submit()" class="ui fluid green huge button" type="submit">
-            更新
-          </button>
+          
         </form>
+
+        
       </div>
-      <!--
-      <button @click="deleteUser" class="ui huge grey fluid button" type="submit">
-        退会
-      </button>
-      -->
     </div>
   </div>
 </template>
@@ -155,37 +195,38 @@ export default {
       }
     },
     
-    async submit() {
+async submit() {
       const headers = {'Authorization': 'mtiToken'};
-      
-      const { userId, password, nickname, age } = this.user;
+
+      const { userId, password, name, dislike, season } = this.user;
       const reqBody = {
         userId,
         password,
-        nickname,
-        age
+        name,
+        dislike,
+        season
       };
-      
+
       try {
         const res = await fetch(baseUrl + '/user', {
           method: 'PUT',
           body: JSON.stringify(reqBody),
           headers,
         });
-        
+
         const text = await res.text();
         const jsonData = text ? JSON.parse(text) : {}
-        
+
         if (!res.ok) {
           const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
           throw new Error(errorMessage);
         }
-        
+
         if (res.status == 200){
           this.done_submit = true;
         }
         console.log(jsonData);
-        
+
       } catch (e) {
         console.log(e)
       }
@@ -201,4 +242,35 @@ export default {
 
 <style scoped>
 /* このコンポーネントだけに適用するCSSはここに記述する */
+.check-center{
+  /*display: flex;*/
+  justify-content: center; /* 水平方向の中央揃え */
+  align-items: center;
+}
+
+.submit-box{
+  padding: 0.8em;
+}
+
+.submit-button{
+  background-color: #13aa52;
+  border: 1px solid #13aa52;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  outline: none;
+  outline: 0;
+  padding: 10px 25px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
 </style>
