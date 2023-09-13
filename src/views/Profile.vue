@@ -3,8 +3,82 @@
     <div class="ui main container">
       <div class="ui segment">
         
-        <form>
+        
+        <form class="ui form" @submit.prevent="submit">
+          <h4 class="ui dividing header">プロフィール編集</h4>
+          <div class="field">
+            <label>ユーザー名</label>
+              <div class="field">
+                <input v-model="user.userId" type="text" name="shipping[first-name]" placeholder="利用する方の名前を入力してください" required disabled>
+            </div>
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <label>赤ちゃんの名前</label>
+              <input v-model="user.userId" type="text" name="shipping[address]" placeholder="お子さんの名前を入力してください">
+            </div>
+            <div class="field">
+              <label>お子さんが生まれてから</label>
+              <select class="ui fluid dropdown">
+                <option value="">選んでください</option>
+                <option value="">5~6カ月(離乳食初期)</option>
+                <option value="">7~8カ月(離乳食中期)</option>
+                <option value="">9~11カ月(離乳食後期)</option>
+                <option value="">12~18カ月(離乳食完了期)</option>
+              </select>
+            </div>
+          </div>
+          
+          <h4 class="ui dividing header">お子さんの苦手な食品/食べられない食品を選んでください</h4>
+          <div class="ui four column grid">
+            
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input  type="checkbox" name="public">
+                  <label>さけ</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>鶏肉</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>しらす</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>卵黄</label>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div class="check-center ui toggle checkbox">
+                  <input type="checkbox" name="public">
+                  <label>ほうれんそう</label>
+                </div>
+              </div>
+              
+          </div>
+          
+          <div class="submit-box ui grid">
+            <div class="row">
+              <button type="submit" @click="submit()" class="submit-button two wide right floated column">
+                  更新する
+              </button>
+            </div>
+          </div>
+          
         </form>
+
         
       </div>
     </div>
@@ -168,4 +242,35 @@ async submit() {
 
 <style scoped>
 /* このコンポーネントだけに適用するCSSはここに記述する */
+.check-center{
+  /*display: flex;*/
+  justify-content: center; /* 水平方向の中央揃え */
+  align-items: center;
+}
+
+.submit-box{
+  padding: 0.8em;
+}
+
+.submit-button{
+  background-color: #13aa52;
+  border: 1px solid #13aa52;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  outline: none;
+  outline: 0;
+  padding: 10px 25px;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 150ms, box-shadow 150ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
 </style>
