@@ -10,19 +10,19 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input v-model="user.userId" type="text" placeholder="ID" required disabled>
+              <input v-model="user.userId" type="text" placeholder="ログインID" required disabled>
             </div>
           </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input v-model="user.password" type="password" placeholder="Password">
+              <input v-model="user.password" type="password" placeholder="パスワード">
             </div>
           </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="tag icon"></i>
-              <input v-model="user.nickname" type="text" placeholder="NickName">
+              <input v-model="user.name" type="name" placeholder="赤ちゃんの名前">
             </div>
           </div>
           <div class="field">
@@ -36,9 +36,11 @@
           </button>
         </form>
       </div>
+      <!--
       <button @click="deleteUser" class="ui huge grey fluid button" type="submit">
         退会
       </button>
+      -->
     </div>
   </div>
 </template>

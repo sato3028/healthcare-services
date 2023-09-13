@@ -10,27 +10,22 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input v-model="user.userId" type="text" placeholder="ID">
+              <input v-model="user.userId" type="text" placeholder="ログインID">
             </div>
           </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input v-model="user.password" type="password" placeholder="Password">
+              <input v-model="user.password" type="password" placeholder="パスワード">
             </div>
           </div>
           <div class="field" v-if="!isLogin">
             <div class="ui left icon input">
               <i class="tag icon"></i>
-              <input v-model="user.nickname" type="text" placeholder="NickName">
+              <input v-model="user.name" type="text" placeholder="赤ちゃんのお名前">
             </div>
           </div>
-          <div class="field" v-if="!isLogin">
-            <div class="ui left icon input" v-if="!isLogin">
-              <i class="calendar icon"></i>
-              <input v-model.number="user.age" type="text" placeholder="age">
-            </div>
-          </div>
+
           <button @click="submit()" class="ui fluid green huge button" type="submit">
             {{ submitText }}
           </button>
@@ -64,8 +59,7 @@ export default {
       user: {
         userId: null,
         password: null,
-        nickname: null,
-        age: null,
+        name: null,
       },
     };
   },
@@ -112,7 +106,7 @@ export default {
           window.localStorage.setItem('token', jsonData.token);
           window.localStorage.setItem('userId', this.user.userId);
           
-          this.$router.push({ name: 'Home'});
+          this.$router.push({ name: 'Mypage'});
           
           console.log(jsonData);
         }catch (e) {
@@ -126,8 +120,7 @@ export default {
       const reqBody = {
         userId: this.user.userId,
         password: this.user.password,
-        nickname: this.user.nickname,
-        age: this.user.age,
+        name: this.user.name,
       };
 
       try {
@@ -151,6 +144,9 @@ export default {
         // 成功時の処理
         console.log(jsonData);
         window.localStorage.setItem('token', jsonData.token);
+        window.localStorage.setItem('userId', this.user.userId);
+        
+        this.$router.push({ name: 'Profile'});
       } catch (e) {
         console.error(e);
         // エラー時の処理

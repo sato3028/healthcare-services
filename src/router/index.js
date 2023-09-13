@@ -50,7 +50,7 @@ const router = createRouter({
         title: 'Mypage'
       }
     },
-            {
+    {
       path: '/post',
       name: 'Post',
       component: Post,
