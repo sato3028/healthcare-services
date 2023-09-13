@@ -4,18 +4,23 @@ const client = new DynamoDBClient({ region: "ap-northeast-1" });
 const Log_TableName = "Team3-app-post";
 const Foods_TableName = "Food";
 const User_TableName = "Team3-app-user";
+const targetDate = new Date();
+targetDate.setHours(0, 0, 0, 0);
+const targetTimestamp = targetDate.getTime();
 var eat_count = 1;
-var totalNutrition = {
-  calcium: 0,
-  carbohydrates: 0,
-  energy: 0,
-  iron: 0,
-  lipid: 0,
-  protain: 0,
-  vitamin_d: 0
+
+const perfectNutrition = {
+  calcium: 250,
+  carbohydrates: 1000,
+  energy: 650.0,
+  iron: 3.5,
+  lipid: 260,
+  protain: 15,
+  vitamin_d: 5.0
 };
 
-function calc_nutrition(eat_item, foods) {
+
+function calc_nutrition(eat_item, foods, totalNutrition) {
   var nutrientData = {
     calcium: 0,
     carbohydrates: 0,
@@ -59,6 +64,26 @@ exports.handler = async (event, context) => {
 
   const userId = event.queryStringParameters.userId;
   const token = event.queryStringParameters.token;
+  
+  var totalNutrition = {
+    calcium: 0,
+    carbohydrates: 0,
+    energy: 0,
+    iron: 0,
+    lipid: 0,
+    protain: 0,
+    vitamin_d: 0
+  };
+  
+  var Nutrition_flg = {
+    calcium: false,
+    carbohydrates: false,
+    energy: false,
+    iron: false,
+    lipid: false,
+    protain: false,
+    vitamin_d: false
+  };
 
   const param_Log = {
     TableName: Log_TableName,
@@ -106,22 +131,67 @@ exports.handler = async (event, context) => {
     } else if (season == 4) {
       eat_count = 4;
     };
-
-    console.log(eat_count);
     
     unmarshalledLogItems.forEach(logItem => {
-      if (logItem.histories) {
-        logItem.histories.forEach(item => {
-          calc_nutrition(item, unmarshalledFoodItems);
+      // 同じ日付のものだけを処理
+      const logDate = to_day(logItem.timestamp);
+      const logTimestamp = logDate.getTime();
+      if (logTimestamp === targetTimestamp) {
+        if (logItem.histories) {
+          logItem.histories.forEach(item => {
+            calc_nutrition(item, unmarshalledFoodItems, totalNutrition);
+          });
+        }
+      }
+    });
+    
+    Object.keys(perfectNutrition).forEach((key) => {
+      Nutrition_flg[key] = totalNutrition[key] < perfectNutrition[key];
+    });
+    
+    const recommendedFoods = [];
+
+    Object.keys(Nutrition_flg).forEach((key) => {
+      if (Nutrition_flg[key]) {
+        const lack = perfectNutrition[key] - totalNutrition[key];
+        
+        const currentSeason = unmarshalledUserItem.season;
+        const acceptableFoods = unmarshalledFoodItems.filter(food => {
+          return (!unmarshalledUserItem.dislikes || !unmarshalledUserItem.dislikes.includes(food.name)) &&
+                 food[`sg_${key}`] !== 0 &&
+                 food[`Season${currentSeason}`] === "1";
         });
+    
+        acceptableFoods.sort((a, b) => a[`sg_${key}`] - b[`sg_${key}`]);
+        
+        const topFoods = acceptableFoods.slice(0, 2).map(food => {
+          const weightNeeded = lack / (food[key] / 100);
+          
+          return {
+            name: food.name,
+            weight: weightNeeded.toFixed(2)
+          };
+        });
+    
+        const recommendation = {
+          nutrition: key,
+          lack
+        };
+    
+        if (topFoods[0]) {
+          recommendation.food1 = topFoods[0];
+        }
+    
+        if (topFoods[1]) {
+          recommendation.food2 = topFoods[1];
+        }
+    
+        recommendedFoods.push(recommendation);
       }
     });
 
     response.body = JSON.stringify({
-      logs: unmarshalledLogItems,
-      user: unmarshalledUserItem,
-      foods: unmarshalledFoodItems,
-      totalNutrition: totalNutrition
+      suggestion: recommendedFoods,
     });
 
   } catch (e) {
