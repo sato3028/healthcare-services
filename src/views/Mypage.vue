@@ -37,7 +37,7 @@
               <div class="content">
                 <h2 class="header">足りていない栄養素は</h2>
                   <ul>
-                    <li v-for="(item, index) in lack_nutrients" :key="index">
+                    <li v-for="(item, index) in _Mypage_nutritions_name" :key="index">
                       <div class="large-text">{{item.name}}</div>
                     </li>
                   </ul>
@@ -50,8 +50,8 @@
                 <h2 class="header">おすすめの食品は</h2>
                 <div class="nutrition-padding">
                     <ul>
-                      <li v-for="(item, index) in foods" :key="index">
-                        <div class="large-text">{{item.name}}</div>
+                      <li v-for="(item, index) in _Mypage_suggestion" :key="index">
+                        <div class="large-text">{{item.string}}</div>
                       </li>
                     </ul>
                 </div>
@@ -95,7 +95,13 @@ export default {
       },
       done_submit: false,
       foods:[],
+      /*lack_nutrients: [
+        {"nutrition": "iron"},
+        {"nutrition": "protain"},
+      ],*/   // DEBUG
       lack_nutrients: [], // 不足している栄養素
+      _Mypage_nutritions_name: [],  // 表示用文字列(栄養素)
+      _Mypage_suggestion: [],       // 表示用文字列(食品)
     };
   },
 
@@ -160,7 +166,7 @@ export default {
       } else {
         return "";
       }
-    }
+    },
   },
 
   methods: {
@@ -208,7 +214,7 @@ export default {
         this.user.password = jsonData.user.password;
         this.user.dislike = jsonData.user.dislike;
         this.user.season = jsonData.user.season;
-        console.log(this.user.name);
+        //console.log(this.user.name);
       }catch (e) {
         console.log(e)
       }
@@ -244,17 +250,98 @@ export default {
         if (res.status == 200){
           this.done_submit = true;
         }
-        console.log(jsonData);
+        //console.log(jsonData);
         
       } catch (e) {
         console.log(e)
       }
-    }
+    },
+    
+    // データベースから苦手な奴を引っ張り出す
+    async getLackNutrition() {
+      const headers = { Authorization: "mtiToken" };
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + `/suggest?userId=${this.user.userId}`, {
+          method: "GET",
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok){
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        
+        this.lack_nutrients = jsonData.suggestion;
+        
+        // this.user.name = jsonData.user.name;
+        // this.user.password = jsonData.user.password;
+        // this.user.dislike = jsonData.user.dislike;
+        // this.user.season = jsonData.user.season;
+        console.log(this.lack_nutrients[0]);
+        
+        // 不足栄養素の出力文字列の作成
+        let str = [];
+      let i = 0;
+      //console.log("here");
+      this.lack_nutrients.forEach(function(value) {
+        //console.log("hello");
+        switch(value.nutrition) {
+          case "energy":
+            str[i] = {"name": "エネルギー"};
+            break;
+          case "protain":
+            str[i] = {"name": "タンパク質"};
+            break;
+          case "lipid":
+            str[i] = {"name": "脂質"};
+            break;
+          case "carbohydrates":
+            str[i] = {"name": "炭水化物"};
+            break;
+          case "calcium":
+            str[i] = {"name": "カルシウム"};
+            break;
+          case "iron":
+            str[i] = {"name": "鉄分"};
+            break;
+          case "vitamin_d":
+            str[i] = {"name": "ビタミンD"};
+            break;
+          default:
+            str[i] = {"name": ""};
+            break;
+        }
+        i++;
+      });
+      //console.log(str);   // DEBUG
+      this._Mypage_nutritions_name = str;
+      
+      // おすすめ食品の出力文字列作成
+      let arr = [];
+      i = 0;
+      console.log(this.user.dislike);
+      this.lack_nutrients.forEach(function(value){
+        arr[i] = {"string": `${value.food1.name} (${str[i].name})`};
+        i++;
+      });
+      
+      //console.log(arr);
+      this._Mypage_suggestion = arr;
+      
+      }catch (e) {
+        console.log(e)
+      }
+    },
   },
   
   created: async function() {
     this.createFoods();
     this.createUser();
+    this.getLackNutrition();
   },
 }
 </script>
