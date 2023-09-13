@@ -73,9 +73,10 @@
 // 必要なものはここでインポートする
 // @は/srcの同じ意味です
 // import something from '@/components/something.vue';
+import { baseUrl } from '@/assets/config.js';
 
 export default {
-  name: 'Template',
+  name: 'Mypagae',
 
   components: {
     // 読み込んだコンポーネント名をここに記述する
@@ -84,6 +85,15 @@ export default {
   data() {
     // Vue.jsで使う変数はここに記述する
     return {
+      user: {
+        userId: window.localStorage.getItem('userId'),
+        password: null,
+        name: null,
+        dislike: [],
+        season: "1"
+      },
+      done_submit: false,
+      foods: []
     };
   },
 
@@ -93,6 +103,95 @@ export default {
 
   methods: {
     // Vue.jsで使う関数はここで記述する
+    async createFoods(){
+      const headers = { Authorization: "mtiToken" };
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + `/foods`, {
+          method: "GET",
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok){
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        this.foods = jsonData.fodos
+      }catch (e) {
+        console.log(e)
+      }
+    },
+    
+    async createUser(){
+      const headers = { Authorization: "mtiToken" };
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + `/user?userId=${this.user.userId}`, {
+          method: "GET",
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok){
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        
+        this.user.name = jsonData.name;
+        this.user.password = jsonData.password;
+        this.user.dislike = jsonData.dislike;
+        this.user.season = jsonData.season;
+      }catch (e) {
+        console.log(e)
+      }
+    },
+    
+    async submit() {
+      const headers = {'Authorization': 'mtiToken'};
+      
+      const { userId, password, name, dislike, season } = this.user;
+      const reqBody = {
+        userId,
+        password,
+        name,
+        dislike,
+        season
+      };
+      
+      try {
+        const res = await fetch(baseUrl + '/user', {
+          method: 'PUT',
+          body: JSON.stringify(reqBody),
+          headers,
+        });
+        
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+        
+        if (!res.ok) {
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        
+        if (res.status == 200){
+          this.done_submit = true;
+        }
+        console.log(jsonData);
+        
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  },
+  
+  created: async function() {
+    this.createFoods();
+    this.createUser();
   },
 }
 </script>
