@@ -1,7 +1,9 @@
-const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
-const { unmarshall } = require("@aws-sdk/util-dynamodb");
+const { DynamoDBClient, ScanCommand, GetItemCommand, QueryCommand } = require("@aws-sdk/client-dynamodb");
+const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 const client = new DynamoDBClient({ region: "ap-northeast-1" });
-const TableName = "User";
+const Log_TableName = "Team3-app-post";
+const Foods_TableName = "Food";
+const User_TableName = "Team3-app-user";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -11,28 +13,42 @@ exports.handler = async (event, context) => {
     },
     body: JSON.stringify({ message: "" }),
   };
-  
-//   const foods = [[food,weight]]
-//   const dislike = GET profile.dislike
-//   const baselines = {name:float}
 
+  const userId = event.queryStringParameters.userId;
 
-  //TODO: 取得対象のテーブル名をparamに宣言
-  const param = {
-    TableName,
+  const param_Log = {
+    TableName: Log_TableName,
+    KeyConditionExpression: "userId = :uid",
+    ExpressionAttributeValues: {
+      ":uid": { S: userId }
+    }
   };
+  
+  const param_User = {
+    TableName: User_TableName,
+    Key: marshall({
+      userId,
+    }),
+  }
 
-  const command = new ScanCommand(param);
+  const command_Log = new QueryCommand(param_Log);
+  const command_User = new GetItemCommand(param_User);
 
   try {
-    // client.send()で全件取得するコマンドを実行
-    const users = (await client.send(command)).Items;
+    const result_Log = await client.send(command_Log);
+    const Log = result_Log.Items;
+    
+    const result_User = await client.send(command_User);
+    const User = result_User.Item;
 
-    //TODO: 全ユーザのpasswordを隠蔽する処理を記述
-    users?.forEach((item) => delete item?.password);
-    //TODO: レスポンスボディを設定する
-    const unmarshalledUsersItems = users.map((item) => unmarshall(item));
-    response.body = JSON.stringify({ users: unmarshalledUsersItems });
+    const unmarshalledLogItems = Log.map(item => unmarshall(item));
+    const unmarshalledUserItems = unmarshall(User);
+    response.body = JSON.stringify({ 
+      logs: unmarshalledLogItems,
+      user: unmarshalledUserItems,
+      
+    });
+
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
@@ -41,6 +57,7 @@ exports.handler = async (event, context) => {
       errorDetail: e.toString(),
     });
   }
+  
 
   return response;
 };
