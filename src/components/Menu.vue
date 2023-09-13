@@ -1,8 +1,6 @@
 <template>
     <div class="brown ui secondary pointing inverted massive menu ">
-        <router-link active-class="active" class="item" exact to="/">Home</router-link>
-        <router-link class="item" exact to="/user" >User</router-link>
-        <router-link class="item" exact to="/profile">Profile</router-link>
+        <router-link active-class="active" class="item" exact to="/profile">Profile</router-link>
         <router-link class="item" exact to="/mypage">Mypage</router-link>
         <router-link class="item" exact to="/post">Post</router-link>
         <div class="right menu">
