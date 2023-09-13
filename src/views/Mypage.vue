@@ -86,8 +86,8 @@ export default {
     // Vue.jsで使う変数はここに記述する
     return {
       user: {
-        userId: "testuser",   // DEBUG
-        // userId: window.localStorage.getItem('userId'),
+        //userId: "testuser",   // DEBUG
+        userId: window.localStorage.getItem('userId'),
         password: null,
         name: null,
         dislike: [],
@@ -281,7 +281,7 @@ export default {
         // this.user.password = jsonData.user.password;
         // this.user.dislike = jsonData.user.dislike;
         // this.user.season = jsonData.user.season;
-        console.log(this.lack_nutrients[0]);
+        //console.log(this.lack_nutrients[0]);
         
         // 不足栄養素の出力文字列の作成
         let str = [];
@@ -381,11 +381,11 @@ export default {
 }
 .edit-button{
   margin-top: 2em;
-  background: #5E5DF0;
+  background: #A52A2A;
   border-radius: 999px;
   box-shadow: #5E5DF0 0 10px 20px -10px;
   box-sizing: border-box;
-  color: #FFFFFF;
+  color: #FFF0F5;
   cursor: pointer;
   font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
   font-size: 16px;
