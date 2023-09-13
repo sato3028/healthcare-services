@@ -86,7 +86,8 @@ export default {
     // Vue.jsで使う変数はここに記述する
     return {
       user: {
-        userId: window.localStorage.getItem('userId'),
+        userId: "testuser",   // DEBUG
+        // userId: window.localStorage.getItem('userId'),
         password: null,
         name: null,
         dislike: [],
@@ -180,7 +181,7 @@ export default {
           const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
           throw new Error(errorMessage);
         }
-        this.foods = jsonData.fodos
+        this.foods = jsonData.foods
       }catch (e) {
         console.log(e)
       }
@@ -203,10 +204,11 @@ export default {
           throw new Error(errorMessage);
         }
         
-        this.user.name = jsonData.name;
-        this.user.password = jsonData.password;
-        this.user.dislike = jsonData.dislike;
-        this.user.season = jsonData.season;
+        this.user.name = jsonData.user.name;
+        this.user.password = jsonData.user.password;
+        this.user.dislike = jsonData.user.dislike;
+        this.user.season = jsonData.user.season;
+        console.log(this.user.name);
       }catch (e) {
         console.log(e)
       }
