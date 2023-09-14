@@ -7,7 +7,7 @@
           <div class="row">
               <div class="card-padding card-shadow ui card eight wide left floated column">
               <div class="content">
-                <h2 class="header">{{user.name}}さんの状態は</h2>
+                <h2 class="header">{{user.name}} さんの状態は</h2>
                 <div class="meta-padding meta">
                     <h3>
                         現在

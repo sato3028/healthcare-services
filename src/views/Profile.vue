@@ -15,12 +15,11 @@
           <div class="two fields">
             <div class="field">
               <label>赤ちゃんの名前</label>
-              <input v-model="user.name" type="text" name="shipping[address]" placeholder="お子さんの名前を入力してください">
+              <input v-model="user.name" type="text" name="shipping[address]" placeholder="お子様の名前を入力してください">
             </div>
             <div class="field">
               <label>お子さんが生まれてから</label>
-              <select class="ui fluid dropdown">
-                <option value="">選んでください</option>
+              <select id="ageSelect" class="ui fluid dropdown" v-model="user.season">
                 <option value="1">5~6カ月(離乳食初期)</option>
                 <option value="2">7~8カ月(離乳食中期)</option>
                 <option value="3">9~11カ月(離乳食後期)</option>
@@ -29,15 +28,19 @@
             </div>
           </div>
           
-          <h4 class="ui dividing header">お子さんの苦手な食品/食べられない食品を選んでください</h4>
+          <h4 class="ui dividing header">お子様の苦手な食品/食べられない食品を選んでください</h4>
           
           <ul class="ui four column grid">
             <template v-for="(food, index) in foods" :key="index">
               <li class="column">
                 <div class="check-center ui toggle checkbox">
                   <div class="content">
-                    <input  type="checkbox" name="public">
-                    <label>{{food.name}}</label>
+                    <input
+                      type="checkbox"
+                      name="public"
+                      v-model="food.checked"
+                      @change="handleCheckboxChange(food)">
+                    <label>{{ food.name }}</label>
                   </div>
                 </div>
               </li>
@@ -116,14 +119,14 @@ export default {
       },
       done_submit: false,
       foods:[],
-      lack_nutrients: [], // 不足している栄養素
+      selected_foods:[]
     };
   },
 
   computed: {
     // 計算した結果を変数として利用したいときはここに記述する
     isButtonDisabled() {
-      return !this.user.userId || !this.user.password || !this.user.nickname || !this.user.age;
+      return !this.user.userId || !this.user.password || !this.user.name || !this.user.season;
     }
   },
 
@@ -145,7 +148,19 @@ export default {
           const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
           throw new Error(errorMessage);
         }
+        // 初期値のdislikeに応じて、チェックボックスの状態を設定
         this.foods = jsonData.foods
+        if(this.user.dislike !== []){
+          this.foods = jsonData.foods.map(food => {
+            if (this.user.dislike.includes(food.foodId)) {
+              food.checked = true;
+            } else {
+              food.checked = false;
+            }
+            return food;
+          });
+        }
+        
       }catch (e) {
         console.log(e)
       }
@@ -177,6 +192,7 @@ export default {
       }
     },
     
+    /*
     async deleteUser() {
       const headers = {'Authorization': 'mtiToken'};
       
@@ -200,11 +216,39 @@ export default {
         console.log(e);
       }
     },
+    */
+    handleCheckboxChange(food) {
+      // チェックボックスが変更されたときに呼び出されるメソッド
+      if (food.checked) {
+        // チェックボックスが選択された場合、selected_foodsに追加
+        this.selected_foods.push(food);
+      } else {
+        // チェックボックスが選択解除された場合、selected_foodsから削除
+        const index = this.selected_foods.indexOf(food);
+        if (index !== -1) {
+          this.selected_foods.splice(index, 1);
+        }
+      }
+      //console.log(this.selected_foods)
+    },
     
-async submit() {
+    async submit() {
       const headers = {'Authorization': 'mtiToken'};
-
-      const { userId, password, name, dislike, season } = this.user;
+      
+      const selectElement = document.getElementById("ageSelect");
+      selectElement.addEventListener("change", function() {
+        this.user.season = selectElement.value; // 選択された値を取得
+      });
+      
+      const { userId, password, name, season } = this.user;
+      
+      var dislike = [];
+      for(const i of this.selected_foods){
+        dislike.push(i.foodId);
+      }
+      console.log(dislike)
+    
+      
       const reqBody = {
         userId,
         password,
@@ -232,6 +276,7 @@ async submit() {
           this.done_submit = true;
         }
         console.log(jsonData);
+        this.$router.push({ name: 'Mypage'});
 
       } catch (e) {
         console.log(e)
@@ -240,8 +285,8 @@ async submit() {
   },
   
   created: async function() {
-    this.createFoods();
     this.createUser();
+    this.createFoods();
   },
 };
 </script>
