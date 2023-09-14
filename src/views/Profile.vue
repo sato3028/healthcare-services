@@ -151,7 +151,7 @@ export default {
         // 初期値のdislikeに応じて、チェックボックスの状態を設定
         this.foods = jsonData.foods
         if(this.user.dislike !== []){
-          this.foods = jsonData.foods.map(food => {
+          this.foods = this.foods.map(food => {
             if (this.user.dislike.includes(food.foodId)) {
               food.checked = true;
             } else {
@@ -243,8 +243,10 @@ export default {
       const { userId, password, name, season } = this.user;
       
       var dislike = [];
-      for(const i of this.selected_foods){
-        dislike.push(i.foodId);
+      for(const i of this.foods){
+        if(i.checked == true){
+          dislike.push(i.foodId);
+        }
       }
       console.log(dislike)
     
