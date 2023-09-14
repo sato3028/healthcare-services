@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="ui main container">
-      <div class="ui segment">
+    <div class="ui main container container-padding">
+      <h1 class="h1-color ui dividing header">プロフィール編集</h1>
+      <div class="ui segment card-padding">
         
         
         <form class="ui form" @submit.prevent="submit">
-          <h4 class="ui dividing header">プロフィール編集</h4>
           <div class="field">
             <label>ユーザー名</label>
               <div class="field">
@@ -248,6 +248,13 @@ async submit() {
 
 <style scoped>
 /* このコンポーネントだけに適用するCSSはここに記述する */
+.container-padding{
+  padding-bottom: 3em;
+}
+.card-padding{
+    border-radius: 30px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
 .check-center{
   /*display: flex;*/
   justify-content: center; /* 水平方向の中央揃え */

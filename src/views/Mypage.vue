@@ -2,6 +2,7 @@
   <div>
     <div class="ui main container">
       <!-- 基本的なコンテンツはここに記載する -->
+      <h1 class="h1-color ui dividing header">マイページ</h1>
       <div class="ui grid">
           <div class="row">
               <div class="card-padding card-shadow ui card eight wide left floated column">
@@ -13,7 +14,7 @@
                         <span class="massive-text">{{_mypage_term}}期</span>
                     </h3>
                 </div>
-                <p>生後{{_mypage_months_of_age}}か月目である{{_mypage_term}}期ではペースト状のものが好まれます。</p>
+                <p>{{_mypage_months_of_age_tips}}</p>
               </div>
             </div>
             
@@ -36,12 +37,11 @@
               <div class="card-padding card-shadow ui card five wide left floated column">
               <div class="content">
                 <h2 class="header">足りていない栄養素は</h2>
-                  <ul>
-                    <li v-for="(item, index) in _Mypage_nutritions_name" :key="index">
+                  <div class="ui list">
+                    <div v-for="(item, index) in _Mypage_nutritions_name" :key="index" class="item">
                       <div class="large-text">{{item.name}}</div>
-                    </li>
-                  </ul>
-                <p>なんか書く</p>
+                    </div>
+                  </div>
               </div>
             </div>
             
@@ -49,13 +49,12 @@
               <div class="content">
                 <h2 class="header">おすすめの食品は</h2>
                 <div class="nutrition-padding">
-                    <ul>
-                      <li v-for="(item, index) in _Mypage_suggestion" :key="index">
+                    <div class="ui list">
+                      <div v-for="(item, index) in _Mypage_suggestion" :key="index" class="item">
                         <div class="large-text">{{item.string}}</div>
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                 </div>
-                <p>です！</p>
               </div>
             </div>
             
@@ -63,7 +62,101 @@
           
       </div>
       
-      <button type="submit" class="ui right floated button edit-button">登録内容を編集</button>
+      <button v-on:click="profile" type="submit" class="ui right floated button edit-button">登録内容を編集</button>
+      
+    <!--<h1 class="h1-color ui dividing header recipe-margin">レシピ紹介</h1>-->
+    <!--<ul class="ui three column grid">-->
+      
+    <!--  <li class="column">-->
+    <!--  <div class="ui special cards">-->
+    <!--    <div class="card">-->
+    <!--      <div class="blurring dimmable image">-->
+    <!--        <div class="ui dimmer">-->
+    <!--          <div class="content">-->
+    <!--            <div class="center">-->
+    <!--              <div class="ui inverted button">Add Friend</div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <img src="https://semantic-ui.com/images/wireframe/image.png">-->
+    <!--      </div>-->
+    <!--      <div class="content">-->
+    <!--        <a class="header">Team Fu</a>-->
+    <!--        <div class="meta">-->
+    <!--          <span class="date">Created in Sep 2014</span>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--      <div class="extra content">-->
+    <!--        <a>-->
+    <!--          <i class="users icon"></i>-->
+    <!--          2 Members-->
+    <!--        </a>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <!--  </li>-->
+      
+    <!--  <li class="column">-->
+    <!--  <div class="ui special cards">-->
+    <!--    <div class="card">-->
+    <!--      <div class="blurring dimmable image">-->
+    <!--        <div class="ui dimmer">-->
+    <!--          <div class="content">-->
+    <!--            <div class="center">-->
+    <!--              <div class="ui inverted button">Add Friend</div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <img src="https://semantic-ui.com/images/wireframe/image.png">-->
+    <!--      </div>-->
+    <!--      <div class="content">-->
+    <!--        <a class="header">Team Fu</a>-->
+    <!--        <div class="meta">-->
+    <!--          <span class="date">Created in Sep 2014</span>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--      <div class="extra content">-->
+    <!--        <a>-->
+    <!--          <i class="users icon"></i>-->
+    <!--          2 Members-->
+    <!--        </a>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <!--  </li>-->
+      
+    <!--  <li class="column">-->
+    <!--  <div class="ui special cards">-->
+    <!--    <div class="card">-->
+    <!--      <div class="blurring dimmable image">-->
+    <!--        <div class="ui dimmer">-->
+    <!--          <div class="content">-->
+    <!--            <div class="center">-->
+    <!--              <div class="ui inverted button">Add Friend</div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--        <img src="https://semantic-ui.com/images/wireframe/image.png">-->
+    <!--      </div>-->
+    <!--      <div class="content">-->
+    <!--        <a class="header">Team Fu</a>-->
+    <!--        <div class="meta">-->
+    <!--          <span class="date">Created in Sep 2014</span>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--      <div class="extra content">-->
+    <!--        <a>-->
+    <!--          <i class="users icon"></i>-->
+    <!--          2 Members-->
+    <!--        </a>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <!--  </li>-->
+      
+    <!--</ul>-->
+      
+      
       
     </div>
   </div>
@@ -139,15 +232,15 @@ export default {
     },
     
     // 生後〇～〇か月
-    _mypage_months_of_age: function() {
+    _mypage_months_of_age_tips: function() {
       if(this.user.season === "1") {
-        return "5~6"; 
+        return "生後5~6カ月目であるゴックン期は、飲み込むことを覚える重要な時期です。"; 
       } else if(this.user.season === "2") {
-        return "7~8";
+        return "生後7~8カ月目であるモグモグ期では歯が生え始め、やわらかいものなら舌と上あごでつぶせるようになる時期です。";
       } else if(this.user.season === "3") {
-        return "9~11";
+        return "生後9~11か月目であるカミカミ期では食べ物を前歯で噛み切って歯茎でも噛み始める時期です。";
       } else if(this.user.season === "4") {
-        return "12~18";
+        return "生後12~18カ月目であるパクパク期では歯をしっかり使うようになり、かじったり噛んだりすることが上手になる時期です。";
       } else {
         return "";
       }
@@ -170,6 +263,9 @@ export default {
   },
 
   methods: {
+    profile(){
+      this.$router.push('/profile')
+    },
     // Vue.jsで使う関数はここで記述する
     async createFoods(){
       const headers = { Authorization: "mtiToken" };
@@ -337,7 +433,11 @@ export default {
       }
     },
   },
-  
+  mounted: function() {
+    $('.special.cards .image').dimmer({
+      on: 'hover'
+    });
+  },
   created: async function() {
     this.createFoods();
     this.createUser();
@@ -359,9 +459,10 @@ export default {
 .massive-text{
     font-size:3em;
     padding-left: 0.2em;
-    color: #FBB161;
+    color: #FAA755;
 }
 .card-padding{
+    border-radius: 30px;
     padding: 1.3em;
 }
 .meta-padding{
@@ -371,17 +472,21 @@ export default {
     padding-bottom: 1em;
 }
 .card-shadow{
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 .large-text{
     margin-bottom: 0.4em;
     font-size: 2em;
     padding-left: 0.2em;
-    color: #FBB161;
+    color: #eb6ea5;
+    font-weight: bold;
+}
+.recipe-margin{
+  margin-top: 3em;
 }
 .edit-button{
   margin-top: 2em;
-  background: #A52A2A;
+  background: #1e4b8e;
   border-radius: 999px;
   box-shadow: #5E5DF0 0 10px 20px -10px;
   box-sizing: border-box;

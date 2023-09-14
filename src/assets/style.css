@@ -1,10 +1,13 @@
 /* 全体で共通のCSSはこのファイルに記述する */
 body {
-  background-color: #FFF0F5;
+  background-color: #E6ECFF;
 }
 
 input {
   height: 30px;
+}
+.h1-color{
+  color: #444444 !important;
 }
 
 .main.container {

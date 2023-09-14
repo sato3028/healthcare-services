@@ -1,12 +1,10 @@
 <template>
-    <div class="brown ui secondary pointing inverted massive menu ">
-        <router-link active-class="active" class="item" exact to="/">Home</router-link>
-        <router-link class="item" exact to="/user" >User</router-link>
-        <router-link class="item" exact to="/profile">Profile</router-link>
-        <router-link class="item" exact to="/mypage">Mypage</router-link>
-        <router-link class="item" exact to="/post">Post</router-link>
+    <div class="nav-color ui secondary pointing inverted massive menu">
+        <router-link active-class="active" class="item" exact to="/post">食事登録</router-link>
+        <router-link active-class="active" class="item" exact to="/mypage">マイページ</router-link>
+        <router-link active-class="active" class="item" exact to="/profile">登録内容編集</router-link>
         <div class="right menu">
-            <a @click="logout" class="item">Logout</a>
+            <a @click="logout" class="item">ログアウト</a>
         </div>
     </div>
 </template>
@@ -25,7 +23,7 @@
     };
 </script>
 <style scoped>
-    .nav-color{
-        background-color: #6e7ca3;
-    }
+.nav-color{
+    background-color: #E6A1A4 !important;
+}
 </style>
