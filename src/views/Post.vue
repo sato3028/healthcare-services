@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="ui main container">
-     <div class="ui segment">
+      <h1 class="h1-color ui dividing header">食事登録</h1>
+     <div class="ui segment card-padding">
        
        <h2 class="text-center">食べた食材</h2>
         <div class="submit-box ui grid">
@@ -52,59 +53,12 @@
                 <h2 class="header">
                   {{ filteredFoods(history.foodId) }}
                 </h2>
-                <span class="meta">{{history.weight}} </span>
+                <span class="meta-gram">{{history.weight}}g</span>
               </div>
             </div>
           </li>
         </template>
       </ul>
-      <!--
-      <ul class="ui three column grid">
-          <li class="column">
-            <div class="ui card fluid">
-              <div class="content">
-                <h2 class="header">
-                  鮭
-                </h2>
-                <span class="meta-gram">50g </span>
-              </div>
-            </div>
-          </li>
-          
-          <li class="column">
-            <div class="ui card fluid">
-              <div class="content">
-                <h2 class="header">
-                  米
-                </h2>
-                <span class="meta-gram">120g </span>
-              </div>
-            </div>
-          </li>
-          
-          <li class="column">
-            <div class="ui card fluid">
-              <div class="content">
-                <h2 class="header">
-                  大根
-                </h2>
-                <span class="meta-gram">30g </span>
-              </div>
-            </div>
-          </li>
-          
-          <li class="column">
-            <div class="ui card fluid">
-              <div class="content">
-                <h2 class="header">
-                  鶏肉
-                </h2>
-                <span class="meta-gram">10g </span>
-              </div>
-            </div>
-          </li>
-      </ul>
-      -->
       
       <div class="submit-box ui grid">
         <div class="row">
@@ -229,6 +183,11 @@ export default {
 </script>
 
 <style scoped>
+.card-padding{
+    border-radius: 30px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
 .text-center {
     text-align:center;
 }
