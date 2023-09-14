@@ -157,7 +157,10 @@ exports.handler = async (event, context) => {
         
         const currentSeason = unmarshalledUserItem.season;
         const acceptableFoods = unmarshalledFoodItems.filter(food => {
-          return (!unmarshalledUserItem.dislikes || !unmarshalledUserItem.dislikes.includes(food.name)) &&
+          console.log("dis" + unmarshalledUserItem.dislike);
+          console.log("food" + food.name);
+          console.log("TF" + !unmarshalledUserItem.dislike.includes(food.foodId));
+          return (!unmarshalledUserItem.dislike || !unmarshalledUserItem.dislike.includes(food.foodId)) &&
                  food[`sg_${key}`] !== 0 &&
                  food[`Season${currentSeason}`] === "1";
         });
